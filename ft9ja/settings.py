@@ -84,8 +84,12 @@ WSGI_APPLICATION = 'ft9ja.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'ft9ja',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+                'host': 'mongodb+srv://ft9ja:figo@cluster0.9bbxu.mongodb.net/?retryWrites=true&w=majority'
+        }
     }
 }
 
@@ -139,3 +143,16 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+
+CELERY_BEAT_SCHEDULE = {
+    'simulate-profit-loss': {
+        'task': 'app.tasks.simulate_profit_loss',
+        'schedule': 60.0,  # 1 minute interval (in seconds)
+    },
+}
