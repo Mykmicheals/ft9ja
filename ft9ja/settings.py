@@ -1,21 +1,22 @@
 from datetime import timedelta
+import os
+import environ
 
 
 from pathlib import Path
 
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w7onc=jfa$lv@wj1!c+-c!tc)5lx)ccmml@zc10!k123q%u!%)'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
 
 
 # Application definition
@@ -88,7 +89,7 @@ DATABASES = {
         'NAME': 'ft9ja',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-                'host': 'mongodb+srv://ft9ja:figo@cluster0.9bbxu.mongodb.net/?retryWrites=true&w=majority'
+                'host': env('DATABASE_URL')
         }
     }
 }
@@ -146,13 +147,13 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 # Celery Configuration
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = env('redis')
+CELERY_RESULT_BACKEND = env('redis')
 
 
 CELERY_BEAT_SCHEDULE = {
     'simulate-profit-loss': {
         'task': 'app.tasks.simulate_profit_loss',
-        'schedule': 60.0,  # 1 minute interval (in seconds)
+        'schedule': 60.0,
     },
 }

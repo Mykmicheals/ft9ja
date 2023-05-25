@@ -1,4 +1,3 @@
-# tasks.py
 
 from .models import Trader, TraderData
 
@@ -13,18 +12,13 @@ def simulate_profit_loss():
     traders = Trader.objects.all()
 
     for trader in traders:
-        # Generate a random profit/loss value for each trader
-        profit_loss = random.uniform(-1, 1)  # Example range: -1 to 1
-
-        # Update trader's profit, loss, and total_balance
-        trader.profit += profit_loss if profit_loss > 0 else 0
-        trader.loss += profit_loss if profit_loss < 0 else 0
-        # trader.total_balance += profit_loss
-        trader.total_balance = int(trader.total_balance + profit_loss)
+        profit_loss = random.uniform(-10, 2)
+        trader.total_profit += profit_loss if profit_loss > 0 else 0
+        trader.total_loss += profit_loss if profit_loss < 0 else 0
+        trader.total_balance += profit_loss
 
         trader.save()
 
-        # Create or update the trader's data for the current minute
         timestamp = datetime.now()
         trader_data, _ = TraderData.objects.get_or_create(
             trader=trader,
